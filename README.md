@@ -66,8 +66,8 @@ npm i
 1. Наіменування слоїв в додатках: AppName.LayerName.ts
 
 ## Структура файлів та додатків
-
+![](readme-images/photo_2025-12-12_17-06-49.jpg)
 [figma link](https://www.figma.com/board/iVCRy1Sy8jT8iKEpqyFegQ/Untitled?node-id=0-1&p=f&t=0hdD4q9BNgHjWD89-0)
 
 ## Endpoints map
-- 
+
