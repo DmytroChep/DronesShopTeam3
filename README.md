@@ -65,6 +65,9 @@ npm i
 ## Стиль коду
 1. Наіменування слоїв в додатках: AppName.LayerName.ts
 
+## Структура файлів та додатків
+
+[figma link](https://www.figma.com/board/iVCRy1Sy8jT8iKEpqyFegQ/Untitled?node-id=0-1&p=f&t=0hdD4q9BNgHjWD89-0)
 
 ## Endpoints map
 - 
