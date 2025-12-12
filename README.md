@@ -13,6 +13,8 @@ English Version
 - [Склад команди](#склад-команди)
 - [Схема звязків моделей](#схема-звязків-моделей)
 - [Технології](#технології)
+- [Структура файлів та додатків](#Структура-файлів-та-додатків)
+- [Endpoints map](Endpoints-map)
 
 ## Склад команди
 1. [Dmytro Chepikov](https://github.com/DmytroChepikov/)
@@ -70,4 +72,4 @@ npm i
 [figma link](https://www.figma.com/board/iVCRy1Sy8jT8iKEpqyFegQ/Untitled?node-id=0-1&p=f&t=0hdD4q9BNgHjWD89-0)
 
 ## Endpoints map
-
+[link](https://docs.google.com/document/d/16J9oeaAA7d49pJn2NrqgXStUggXNK79R3M1Gk9s4DeE/edit?usp=sharing)
