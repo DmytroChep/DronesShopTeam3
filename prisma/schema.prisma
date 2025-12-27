@@ -1,0 +1,132 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @unique @id @default(autoincrement())
+  username String
+  email String @unique
+  password String
+  isAdmin Boolean
+  
+  contactsMessages ContactsMessage[]
+  userInfo UserInfo?
+  userOrderComment UserOrderComment[]
+  userAdress Adress[]
+  order Order[]
+  cartsProduct CartsProduct?
+}
+
+model Adress{
+  id Int @unique @id @default(autoincrement())
+  postDepartament String
+  street String
+  home String
+  appartament Int
+  entrants Int
+
+  user User? @relation(fields: [userId], references: [id])
+  userId Int
+
+  order Order[]
+}
+
+model UserInfo{
+  id Int @unique @id @default(autoincrement())
+  name String
+  surname String
+  middleName String
+  birthday DateTime
+  phoneNumber Int
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+}
+
+
+model Order {
+  id Int @unique @id @default(autoincrement())
+
+  totalPrice Int
+  status String
+  createdAt String
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  userAdress Adress? @relation(fields: [userAdressId], references: [id])
+  userAdressId Int
+}
+
+model OrderProduct{
+  id Int @unique @id @default(autoincrement())
+  amount Int
+  priceInPurchase Int
+
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+}
+model UserOrderComment{
+  id Int @unique @id @default(autoincrement())
+  comment String
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+model ContactsMessage{
+  id Int @unique @id @default(autoincrement())
+  message String
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+}
+
+
+
+model Product{
+  id Int @unique @id @default(autoincrement())
+  title String
+  price Int
+  img String
+
+  productDescription ProductDescription?
+  orderProduct OrderProduct[]
+  category Category[]
+  cartsProduct CartsProduct[]
+}
+
+model Category{
+  id Int @unique @id @default(autoincrement())
+  name String
+  product Product[]
+}
+
+model CartsProduct{
+  id Int @unique @id @default(autoincrement())
+  amout Int
+  user User @relation(fields: [userId], references: [id])
+  userId Int @unique
+  product Product[]
+}
+
+model ProductDescription{
+  id Int @unique @id @default(autoincrement())
+  title String
+  description String
+  img String
+
+  product Product @relation(fields: [productId], references: [id])
+  productId Int @unique
+} 
