@@ -16,11 +16,11 @@ export const  ProductRepository:RepositoryContract = {
 
             return Products
         }catch(error){
-            // if (error instanceof Prisma.PrismaClientKnownRequestError){
-            //     if (error.code === "P2024"){
-            //         return "error code P2024"
-            //     }
-            // }
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
             throw error
         }
     },
@@ -32,11 +32,11 @@ export const  ProductRepository:RepositoryContract = {
 
         return Product
     }catch(error){
-            // if (error instanceof Prisma.PrismaClientKnownRequestError){
-            //     if (error.code === "P2024"){
-            //         return "error code P2024"
-            //     }
-            // }
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
             throw error
         }
     },
@@ -50,11 +50,11 @@ export const  ProductRepository:RepositoryContract = {
     
             return Product
         }catch(error){
-            // if (error instanceof Prisma.PrismaClientKnownRequestError){
-            //     if (error.code === "P2024"){
-            //         return "error code P2024"
-            //     }
-            // }
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
             throw error
         }
     },
@@ -71,11 +71,11 @@ export const  ProductRepository:RepositoryContract = {
             
             return Product
         }catch(error){
-            // if (error instanceof Prisma.PrismaClientKnownRequestError){
-            //     if (error.code === "P2024"){
-            //         return "error code P2024"
-            //     }
-            // }
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
             throw error
         }
         
@@ -90,11 +90,11 @@ export const  ProductRepository:RepositoryContract = {
             console.log(Product)
             return Product
         }catch(error){
-            // if (error instanceof Prisma.PrismaClientKnownRequestError){
-            //     if (error.code === "P2024"){
-            //         return "error code P2024"
-            //     }
-            // }
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
             throw error
         }
     },

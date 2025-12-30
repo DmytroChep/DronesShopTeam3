@@ -1,3 +1,4 @@
+import { response } from "express"
 import { UserService } from "./User.service"
 import type { ControllerContract } from "./User.types"
 
@@ -42,4 +43,33 @@ export const UserController: ControllerContract = {
 
         res.status(200).json(response)
     },
+    updateUser: async (req, res) => {
+        const userData = req.body
+        const id = req.params.id
+
+        const response = await UserService.updateUser(userData, id)
+        res.status(200).json(response)
+    },
+    createAdress: async (req, res) => {
+        const adressData = req.body; 
+
+        const response = await UserService.createAdress(res.locals.token, adressData);
+        
+        res.status(200).json(response);
+    },
+    updateDataAdress: async (req, res) => {
+        const requestBody = req.body
+        const AdressId = Number(req.params.id)
+        
+        const response = await UserService.updateDataAdress(AdressId, requestBody)
+
+        res.status(200).json(response)
+    },
+    deleteAdress: async (req, res) => {
+        const AdressId = Number(req.params.id)
+        
+        const response = await UserService.deleteAdress(AdressId)
+
+        res.status(200).json(response)
+    }
 }

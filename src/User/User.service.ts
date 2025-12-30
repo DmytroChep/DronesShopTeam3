@@ -30,9 +30,7 @@ export const UserService: ServiceContract = {
     },
     me: async (JWT) => {
         console.log(JWT)
-        
-        
-        
+
         const email = jwt.verify(JWT, ENV.SECRET_KEY) as Email;
 
 
@@ -46,4 +44,29 @@ export const UserService: ServiceContract = {
 
         return userWithoutPassword
     },
+    updateUser: async (userData, id) => {
+        const response = await UserRepository.updateUser(userData, id)
+
+        return response
+    },
+    createAdress: async (JWT, adressData) => {
+        const user = jwt.verify(JWT, ENV.SECRET_KEY) as Email;
+
+
+        const response = await UserRepository.createAdress(user.email, adressData);
+
+        if (typeof response === "string"){
+            return response
+        }
+
+        return response
+    },
+    updateDataAdress: async (AdressId, AdressData) => {
+        const Adress = await UserRepository.updateDataAdress(AdressId, AdressData)
+        return Adress
+    } ,
+    deleteAdress: async (AdressId) => {
+        const Adress = await UserRepository.deleteAdress(AdressId)
+        return Adress
+    }
 }
