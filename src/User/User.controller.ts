@@ -71,5 +71,41 @@ export const UserController: ControllerContract = {
         const response = await UserService.deleteAdress(AdressId)
 
         res.status(200).json(response)
+    },
+    getAdressById: async (req, res) => {
+        const AdressId = Number(req.params.id)
+        
+        const response = await UserService.getAdressById(AdressId)
+
+        res.status(200).json(response)
+    },
+    createOrder: async (req, res) => {
+        const OrderData = req.body; 
+
+        const response = await UserService.createOrder(res.locals.token, OrderData);
+        
+        res.status(200).json(response);
+    },
+    updateDataOrder: async (req, res) => {
+        const requestBody = req.body
+        const OrderId = Number(req.params.id)
+        
+        const response = await UserService.updateDataOrder(OrderId, requestBody)
+
+        res.status(200).json(response)
+    },
+    deleteOrder: async (req, res) => {
+        const OrderId = Number(req.params.id)
+        
+        const response = await UserService.deleteOrder(OrderId)
+
+        res.status(200).json(response)
+    },
+    getOrderById: async (req, res) => {
+        const OrderId = Number(req.params.id)
+        
+        const response = await UserService.getOrderById(OrderId)
+
+        res.status(200).json(response)
     }
 }

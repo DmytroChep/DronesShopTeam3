@@ -68,5 +68,34 @@ export const UserService: ServiceContract = {
     deleteAdress: async (AdressId) => {
         const Adress = await UserRepository.deleteAdress(AdressId)
         return Adress
-    }
+    },
+    getAdressById: async (AdressId) => {
+        const Adress = await UserRepository.getAdressById(AdressId)
+        return Adress
+    },
+    createOrder: async (JWT, OrderData) => {
+        const user = jwt.verify(JWT, ENV.SECRET_KEY) as Email;
+
+
+        const response = await UserRepository.createOrder(user.email, OrderData);
+
+        if (typeof response === "string"){
+            return response
+        }
+
+        return response
+    },
+    updateDataOrder: async (OrderId, OrderData) => {
+        const Order = await UserRepository.updateDataOrder(OrderId, OrderData)
+        return Order
+    } ,
+    deleteOrder: async (OrderId) => {
+        const Order = await UserRepository.deleteOrder(OrderId)
+        return Order
+    },
+    getOrderById: async (OrderId) => {
+        const Order = await UserRepository.getOrderById(OrderId)
+        return Order
+    },
 }
+
