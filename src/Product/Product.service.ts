@@ -2,6 +2,7 @@ import type {Request} from "express"
 import type { ServiceContract } from "./Product.types"
 import { writeFile } from "fs/promises"
 import { ProductRepository } from "./Product.repository"
+import { client } from "../config"
 
 
 
@@ -27,6 +28,49 @@ export const ProductService:ServiceContract = {
     deleteProduct: async (ProductId) => {
         const Product = await ProductRepository.deleteProduct(ProductId)
         return Product
-    }
+    },
+    getProductsSuggestions: async (skip, take, newFilter, popularFilter) => {
+		let numberSkip = Number(skip);
+		let numberTake = Number(take);
+		let boolNewFilter = Boolean(newFilter);
+        let boolPopularFilter = Boolean(popularFilter)
+
+
+		if (!skip) {
+			numberSkip = 0;
+		}
+		if (!take) {
+			numberTake = (await client.product.findMany()).length;
+		}
+		if (!boolNewFilter) {
+			boolNewFilter = false;
+		}
+
+        if (!boolPopularFilter) {
+            boolPopularFilter = false
+        }
+
+		if (isNaN(numberSkip)) {
+			return "error";
+		}
+		if (isNaN(numberTake)) {
+			return "error";
+		}
+		if (!(typeof boolNewFilter === "boolean")) {
+			return "error";
+		}
+
+        if (!(typeof boolPopularFilter === "boolean")) {
+			return "error";
+		}
+
+		const filteredPosts = await ProductRepository.getProductsSuggestions(
+			numberSkip,
+			numberTake,
+			boolNewFilter,
+            boolPopularFilter
+		);
+		return filteredPosts;
+	},
 }
 

@@ -130,3 +130,8 @@ model ProductDescription{
   product Product @relation(fields: [productId], references: [id])
   productId Int @unique
 }
+
+model GmailCode{
+  id Int @unique @id @default(autoincrement())
+  code Int @unique
+}

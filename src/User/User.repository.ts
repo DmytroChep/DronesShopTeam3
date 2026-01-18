@@ -27,13 +27,7 @@ export const UserRepository: RepositoryContract = {
         if (!await compare(UserData.password, user.password)){
             return "password not correct"
         }
-        sendEmail("hi! Here is your auth code:", `
-                <div style="display: block; text-align: center; font-family: sans-serif;">
-                    <p>your code is:</p>
-                    <h1 style="font-size: 32px; color: #333;">123321</h1>
-                    <hr style="width: 50%; margin: 20px auto;">
-                    <h4 style="color: #666;">have a good day!</h4>
-                </div>`, "shahblet1234@gmail.com")
+        
         return user
     },
     me: async (UserEmail) => {
@@ -55,6 +49,20 @@ export const UserRepository: RepositoryContract = {
             return "user not found"
         }
 
+        return user
+    },
+    getUserWithRelations: async (id) => {
+        const user = await client.user.findUnique({
+            where: { id: Number(id) },
+            include: {
+                userAdress: true,
+                order: true
+            }
+        })
+        if (!user){
+            return "incorrect id"
+        }
+        
         return user
     },
     createAdress: async (email, adressData) => {
@@ -167,7 +175,7 @@ export const UserRepository: RepositoryContract = {
         }
         
     },
-    deleteOrder: async (OrderId) => {
+    cancelOrder: async (OrderId) => {
         try{
             const Order = await client.order.delete(
                 {
@@ -196,6 +204,22 @@ export const UserRepository: RepositoryContract = {
                 return "incorrect id"
             }
             return Order
+        }catch(error){
+            if (error instanceof Prisma.PrismaClientKnownRequestError){
+                if (error.code === "P2024"){
+                    return "error code P2024"
+                }
+            }
+            throw error
+        }
+    },
+    sendCodeVerify: async (code) => {
+        try{
+            const gmailCode = await client.gmailCode.create({data: {code: code}})
+            if (!gmailCode){
+                return "error"
+            }
+            return "status success"
         }catch(error){
             if (error instanceof Prisma.PrismaClientKnownRequestError){
                 if (error.code === "P2024"){

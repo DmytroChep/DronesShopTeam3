@@ -50,6 +50,13 @@ export const UserController: ControllerContract = {
         const response = await UserService.updateUser(userData, id)
         res.status(200).json(response)
     },
+    getUserWithRelations: async (req, res) => {
+        const userId = req.params.id
+
+        const response = await UserService.getUserWithRelations(userId)
+
+       res.status(200).json(response)
+    },
     createAdress: async (req, res) => {
         const adressData = req.body; 
 
@@ -94,10 +101,10 @@ export const UserController: ControllerContract = {
 
         res.status(200).json(response)
     },
-    deleteOrder: async (req, res) => {
+    cancelOrder: async (req, res) => {
         const OrderId = Number(req.params.id)
         
-        const response = await UserService.deleteOrder(OrderId)
+        const response = await UserService.cancelOrder(OrderId)
 
         res.status(200).json(response)
     },
@@ -106,6 +113,16 @@ export const UserController: ControllerContract = {
         
         const response = await UserService.getOrderById(OrderId)
 
+        res.status(200).json(response)
+    },
+    sendCodeVerify: async (req, res) => {
+        const gmail = String(req.query.gmail) 
+        if (!gmail){
+            res.status(400).json("not writed email")
+            return
+        }
+
+        const response = await UserService.sendCodeVerify(gmail)
         res.status(200).json(response)
     }
 }

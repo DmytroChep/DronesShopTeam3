@@ -3,7 +3,7 @@ import {readFileSync} from "fs"
 import {writeFile} from "fs/promises"
 import { client } from "../config/client"
 import { Prisma } from "../generated/prisma/client";
-import type { RepositoryContract } from "./Product.types";
+import type { ProductWithTags, ProductWithTagsAndOrders, RepositoryContract } from "./Product.types";
 
 export const jsonPathProducts = path.join(__dirname, "..", "..","Products.json")
 
@@ -98,4 +98,38 @@ export const  ProductRepository:RepositoryContract = {
             throw error
         }
     },
+    getProductsSuggestions: async (skip, take, newFilter, popularFilter) => {
+        console.log(newFilter, popularFilter)
+		try {
+			const products = await client.product.findMany({
+				take: take,
+				include: { category: true ,
+                    _count: {
+                        select: { orderProduct: true },
+                    },
+                },
+			});
+
+            
+
+			let filteredPosts: ProductWithTagsAndOrders[] = products.slice(skip, take + skip);
+			if (newFilter) {
+				filteredPosts = filteredPosts.reverse()
+
+			}
+
+            if (popularFilter){
+                filteredPosts = filteredPosts.sort((product1, product2) => product2._count.orderProduct - product1._count.orderProduct)
+            }
+
+			return filteredPosts;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === "P2024") {
+					return "error code P2024";
+				}
+			}
+			throw error;
+		}
+	},
 }

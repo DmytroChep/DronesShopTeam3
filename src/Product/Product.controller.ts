@@ -37,6 +37,16 @@ export const ProductController: ControllerContract = {
         const response = await ProductService.deleteProduct(ProductId)
 
         res.status(200).json(response)
-    }
+    },
+    getProductsSuggestions: async (req, res) => {
+		const skip = Number(req.query.skip);
+		const take = Number(req.query.take);
+		const newFilter = Boolean(req.query.new);
+        const popularFilter = Boolean(req.query.popular)
+
+		const response = await ProductService.getProductsSuggestions(skip, take, newFilter, popularFilter);
+        
+		res.status(200).json(response);
+	},
 }
 

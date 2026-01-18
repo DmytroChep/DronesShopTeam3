@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken"
 import { ENV } from "../config/env"
 import { UserRepository } from "./User.repository"
 import type { Email, ServiceContract } from "./User.types"
+import { sendEmail } from "../config"
 
 export const UserService: ServiceContract = {
     registration: async (UserData) => {
@@ -49,6 +50,10 @@ export const UserService: ServiceContract = {
 
         return response
     },
+    getUserWithRelations: async (id) => {
+        const user = await UserRepository.getUserWithRelations(id)
+        return user
+    },
     createAdress: async (JWT, adressData) => {
         const user = jwt.verify(JWT, ENV.SECRET_KEY) as Email;
 
@@ -64,7 +69,7 @@ export const UserService: ServiceContract = {
     updateDataAdress: async (AdressId, AdressData) => {
         const Adress = await UserRepository.updateDataAdress(AdressId, AdressData)
         return Adress
-    } ,
+    },
     deleteAdress: async (AdressId) => {
         const Adress = await UserRepository.deleteAdress(AdressId)
         return Adress
@@ -89,13 +94,32 @@ export const UserService: ServiceContract = {
         const Order = await UserRepository.updateDataOrder(OrderId, OrderData)
         return Order
     } ,
-    deleteOrder: async (OrderId) => {
-        const Order = await UserRepository.deleteOrder(OrderId)
+    cancelOrder: async (OrderId) => {
+        const Order = await UserRepository.cancelOrder(OrderId)
         return Order
     },
     getOrderById: async (OrderId) => {
         const Order = await UserRepository.getOrderById(OrderId)
         return Order
     },
+    sendCodeVerify: async (gmail) => {
+        const code = Math.floor(100000 + Math.random() * 900000)    
+        console.log(gmail)
+        try{
+            sendEmail("hi! Here is your auth code:", `
+                <div style="display: block; text-align: center; font-family: sans-serif;">
+                    <p>your code is:</p>
+                    <h1 style="font-size: 32px; color: #333; background-color: #6d6d6dff">${code}</h1>
+                    <hr style="width: 50%; margin: 20px auto;">
+                    <h4 style="color: #666;">have a good day!</h4>
+                </div>`, `${gmail}`)
+        } catch(error){
+            console.log(error)
+            return String(error)
+        }
+        
+        const status = await UserRepository.sendCodeVerify(code)
+        return status
+    }
 }
 

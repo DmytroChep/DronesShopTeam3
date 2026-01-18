@@ -4,6 +4,9 @@ import { Prisma } from "../generated/prisma/client";
 
 export type Product = Prisma.ProductGetPayload<{}>;
 export type ProductWithTags = Prisma.ProductGetPayload<{include: {category: true}}>;
+export type ProductWithTagsAndOrders = Prisma.ProductGetPayload<{include: {category: true, _count: {
+                        select: { orderProduct?: true },
+                    },}}>;
 
 export type CreateProduct = Prisma.ProductUncheckedCreateInput;
 export type CreateProductChecked = Prisma.ProductCreateInput;
@@ -23,6 +26,15 @@ export interface ControllerContract {
     addProductToJson: (req: Request<object, Product|string, Product>, res: Response<Product|string>)=> Promise<void>;
     updateDataProduct: (req: Request<{id:number}, UpdateProduct|string, UpdateProduct>, res: Response<UpdateProduct|string>)=> Promise<void>;
     deleteProduct: (req: Request<{id:number}, Product|string, Product>, res: Response<Product|string>)=> Promise<void>;
+    getProductsSuggestions: (
+		req: Request<
+			object,
+			ProductWithTagsAndOrders[] | string,
+			object,
+			{ take?: string; skip?: string; new?: boolean; popular?: boolean }
+		>,
+		res: Response<ProductWithTagsAndOrders[] | string>,
+	) => Promise<void>;
 }
 
 export interface ServiceContract {
@@ -31,6 +43,12 @@ export interface ServiceContract {
     addProductToJson: (requestBody: CreateProduct) => Promise<Product|string>,
     updateDataProduct: (ProductId:number, ProductData: UpdateProduct) => Promise<UpdateProduct|string>,
     deleteProduct: (ProductId:number) => Promise<Product|string>,
+    getProductsSuggestions: (
+		skip: number,
+		take: number,
+		newFilter: boolean,
+        popularFilter: boolean
+	) => Promise<ProductWithTagsAndOrders[] | string>;
 }
 
 export interface RepositoryContract {
@@ -39,4 +57,10 @@ export interface RepositoryContract {
     addProductToJson: (requestBody: CreateProduct) => Promise<Product|string>,
     updateDataProduct: (ProductId:number, ProductData: UpdateProduct) => Promise<UpdateProduct|string>,
     deleteProduct: (ProductId:number) => Promise<Product|string>,
+    getProductsSuggestions: (
+		skip: number,
+		take: number,
+		newFilter: boolean,
+        popularFilter: boolean
+	) => Promise<ProductWithTagsAndOrders[] | string>;
 }
