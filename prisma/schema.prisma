@@ -98,6 +98,8 @@ model ContactsMessage{
 model Product{
   id Int @unique @id @default(autoincrement())
   title String
+  description String
+  color String
   price Int
   img String
 
