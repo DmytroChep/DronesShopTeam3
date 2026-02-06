@@ -4,6 +4,7 @@ import {writeFile} from "fs/promises"
 import { client } from "../config/client"
 import { Prisma } from "../generated/prisma/client";
 import type { ProductWithTags, ProductWithTagsAndOrders, RepositoryContract } from "./Product.types";
+import { getSimilarity } from "../utils";
 
 export const jsonPathProducts = path.join(__dirname, "..", "..","Products.json")
 
@@ -98,7 +99,7 @@ export const  ProductRepository:RepositoryContract = {
             throw error
         }
     },
-    getProductsSuggestions: async (skip, take, newFilter, popularFilter) => {
+    getProductsSuggestions: async (skip, take, newFilter, popularFilter, sameAsFilter) => {
         console.log(newFilter, popularFilter)
 		try {
 			const products = await client.product.findMany({
@@ -113,13 +114,32 @@ export const  ProductRepository:RepositoryContract = {
             
 
 			let filteredPosts: ProductWithTagsAndOrders[] = products.slice(skip, take + skip);
+
+
 			if (newFilter) {
-				filteredPosts = filteredPosts.reverse()
+				filteredPosts = filteredPosts.sort((product1, product2) => product1.creationDate.getDate() - product2.creationDate.getDate())
 
 			}
 
             if (popularFilter){
-                filteredPosts = filteredPosts.sort((product1, product2) => product2._count.orderProduct - product1._count.orderProduct)
+                filteredPosts = filteredPosts.sort((product1, product2) => product1._count.orderProduct - product2._count.orderProduct)
+            }
+
+            if (sameAsFilter){
+                const {name, categories, price, limit} = sameAsFilter
+
+                const postsWithoutMain = filteredPosts.filter((currentProduct) => {
+                    return name != currentProduct.title
+                })
+
+                if (name) {
+                    filteredPosts = postsWithoutMain.sort((drone1, drone2) => getSimilarity(drone2.title, name) - getSimilarity(drone1.title, name));
+                }
+
+                if (price){
+                    filteredPosts = postsWithoutMain.filter(p => {return p.price >= price.price - price.deviation && p.price <= price.price + price.deviation;});
+                }
+                
             }
 
 			return filteredPosts;

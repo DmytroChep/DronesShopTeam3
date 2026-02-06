@@ -102,6 +102,7 @@ model Product{
   color String
   price Int
   img String
+  creationDate DateTime @default(now())
 
   productDescription ProductDescription?
   orderProduct OrderProduct[]

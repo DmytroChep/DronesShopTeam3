@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { Prisma } from "../generated/prisma/client";
+import { Category, Prisma } from "../generated/prisma/client";
 
 
 export type Product = Prisma.ProductGetPayload<{}>;
@@ -20,6 +20,14 @@ export type CreateProductData = Omit<Product, "id">
 export type UpdateProductData = Partial<Omit<Product, "id">>    
 
 
+interface ISameAs{
+    name?: string, 
+    categories?: Category[], 
+    price?: {price: number, deviation: number}, 
+    limit?: number
+}
+
+
 export interface ControllerContract {
     getAllProducts: (req: Request<object, Product[]|string, object>, res: Response<Product[]|string>)=> Promise<void>;
     getProductById: (req: Request<{id:number}, Product|string|null, object>, res: Response<Product|string|null>)=> Promise<void>;
@@ -31,7 +39,7 @@ export interface ControllerContract {
 			object,
 			ProductWithTagsAndOrders[] | string,
 			object,
-			{ take?: string; skip?: string; new?: boolean; popular?: boolean }
+			{ take?: string; skip?: string; new?: boolean; popular?: boolean; sameAs?: ISameAs }
 		>,
 		res: Response<ProductWithTagsAndOrders[] | string>,
 	) => Promise<void>;
@@ -47,7 +55,8 @@ export interface ServiceContract {
 		skip: number,
 		take: number,
 		newFilter: boolean,
-        popularFilter: boolean
+        popularFilter: boolean,
+        sameAsFilter: ISameAs
 	) => Promise<ProductWithTagsAndOrders[] | string>;
 }
 
@@ -61,6 +70,7 @@ export interface RepositoryContract {
 		skip: number,
 		take: number,
 		newFilter: boolean,
-        popularFilter: boolean
+        popularFilter: boolean,
+        sameAsFilter: ISameAs
 	) => Promise<ProductWithTagsAndOrders[] | string>;
 }

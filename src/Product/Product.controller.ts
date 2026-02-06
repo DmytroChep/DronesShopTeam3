@@ -43,10 +43,10 @@ export const ProductController: ControllerContract = {
 		const take = Number(req.query.take);
 		const newFilter = Boolean(req.query.new);
         const popularFilter = Boolean(req.query.popular)
+        const sameAsFilter = Object(req.query.sameAs)
 
-		const response = await ProductService.getProductsSuggestions(skip, take, newFilter, popularFilter);
+		const response = await ProductService.getProductsSuggestions(skip, take, newFilter, popularFilter, sameAsFilter);
         
 		res.status(200).json(response);
 	},
 }
-

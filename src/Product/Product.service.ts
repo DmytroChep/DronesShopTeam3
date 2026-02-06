@@ -29,12 +29,12 @@ export const ProductService:ServiceContract = {
         const Product = await ProductRepository.deleteProduct(ProductId)
         return Product
     },
-    getProductsSuggestions: async (skip, take, newFilter, popularFilter) => {
+    getProductsSuggestions: async (skip, take, newFilter, popularFilter, sameAsFilter) => {
 		let numberSkip = Number(skip);
 		let numberTake = Number(take);
 		let boolNewFilter = Boolean(newFilter);
         let boolPopularFilter = Boolean(popularFilter)
-
+		let objSameAsFilter = Object(sameAsFilter)
 
 		if (!skip) {
 			numberSkip = 0;
@@ -50,6 +50,10 @@ export const ProductService:ServiceContract = {
             boolPopularFilter = false
         }
 
+		if (!objSameAsFilter) {
+			objSameAsFilter = null
+		}
+
 		if (isNaN(numberSkip)) {
 			return "error";
 		}
@@ -64,11 +68,24 @@ export const ProductService:ServiceContract = {
 			return "error";
 		}
 
+		if (!(typeof objSameAsFilter === "object")) {
+			return "error";
+		}
+
+		const rawString = objSameAsFilter;
+
+		const jsonLike = rawString.match(/\{.*\}/)[0];
+
+		const fixedJson = jsonLike.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+
+		const data = JSON.parse(fixedJson);
+
 		const filteredPosts = await ProductRepository.getProductsSuggestions(
 			numberSkip,
 			numberTake,
 			boolNewFilter,
-            boolPopularFilter
+            boolPopularFilter,
+			data
 		);
 		return filteredPosts;
 	},
