@@ -137,9 +137,23 @@ export const  ProductRepository:RepositoryContract = {
                 }
 
                 if (price){
-                    filteredPosts = postsWithoutMain.filter(p => {return p.price >= price.price - price.deviation && p.price <= price.price + price.deviation;});
+                    filteredPosts = postsWithoutMain.filter((product) => {
+                        return product.price >= price.price - price.deviation && product.price <= price.price + price.deviation
+                    })
                 }
-                
+                console.log("weniwepinweb", categories)
+                if (categories){
+                    filteredPosts = postsWithoutMain.filter((product) => {
+                        console.log(product.category)
+                        return categories.some(category => {
+                            return product.category.some(item => item.id === category.id)
+                        }); 
+                    })
+                }
+
+                if (limit) {
+                    filteredPosts = filteredPosts.slice(0, limit)
+                }
             }
 
 			return filteredPosts;

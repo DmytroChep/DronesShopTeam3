@@ -50,8 +50,9 @@ export const ProductService:ServiceContract = {
             boolPopularFilter = false
         }
 
-		if (!objSameAsFilter) {
+		if (Object.keys(objSameAsFilter).length === 0) {
 			objSameAsFilter = null
+			console.log(objSameAsFilter)
 		}
 
 		if (isNaN(numberSkip)) {
@@ -71,14 +72,17 @@ export const ProductService:ServiceContract = {
 		if (!(typeof objSameAsFilter === "object")) {
 			return "error";
 		}
-
-		const rawString = objSameAsFilter;
-
-		const jsonLike = rawString.match(/\{.*\}/)[0];
-
-		const fixedJson = jsonLike.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
-
-		const data = JSON.parse(fixedJson);
+		let data;
+		console.log(objSameAsFilter )
+		if (objSameAsFilter){
+			const rawString = objSameAsFilter;
+	
+			const jsonLike = rawString.match(/\{.*\}/)[0];
+	
+			const fixedJson = jsonLike.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+	
+			data = JSON.parse(fixedJson);
+		}
 
 		const filteredPosts = await ProductRepository.getProductsSuggestions(
 			numberSkip,
