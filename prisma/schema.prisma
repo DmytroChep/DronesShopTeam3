@@ -104,10 +104,11 @@ model Product{
   img String
   creationDate DateTime @default(now())
 
-  productDescription ProductDescription?
+  productDescription ProductDescription[]
   orderProduct OrderProduct[]
   category Category[]
   cartsProduct CartsProduct[]
+  ProductCharacteristic ProductCharacteristic[]
 }
 
 model Category{
@@ -131,7 +132,21 @@ model ProductDescription{
   img String
 
   product Product @relation(fields: [productId], references: [id])
-  productId Int @unique
+  productId Int
+}
+
+model ProductCharacteristic{
+  id Int @unique @id @default(autoincrement())
+  title String
+  description String
+  img String
+
+  coding String
+  ufsStorage Int
+  eMMSStorage Int
+
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
 }
 
 model GmailCode{

@@ -4,7 +4,8 @@
 	"main": "main.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "npx ts-node src/server.ts"
+		"start": "npx ts-node src/server.ts",
+		"pretty": "npx @biomejs/biome check"
 	},
 	"repository": {
 		"type": "git",
