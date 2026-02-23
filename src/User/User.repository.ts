@@ -21,6 +21,7 @@ export const UserRepository: RepositoryContract = {
 		return user;
 	},
 	login: async (UserData) => {
+		console.log(UserData.email )
 		const user = await client.user.findUnique({
 			where: { email: UserData.email },
 		});

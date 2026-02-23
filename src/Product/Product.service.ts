@@ -46,16 +46,19 @@ export const ProductService: ServiceContract = {
 
 		let data = {};
 
-		if (sameAsFilter && typeof sameAsFilter === "string") {
+		const filterCandidate = sameAsFilter ? String(sameAsFilter) : null;
+		
+		if (filterCandidate && typeof filterCandidate === "string") {
 			try {
-				const match = sameAsFilter.match(/\{.*\}/);
-				if (match) {
-					const jsonLike = match[0];
-					const fixedJson = jsonLike.replace(
-						/([{,])\s*([a-zA-Z0-9_]+)\s*:/g,
-						'$1"$2":',
-					);
-					data = JSON.parse(fixedJson);
+				const jsonMatch = filterCandidate.match(/\{.*\}/);
+				
+				if (jsonMatch) {
+					let jsonString = jsonMatch[0];
+					
+
+					jsonString = jsonString.replace(/([{,])\s*([a-zA-Z0-9_]+)\s*:/g, '$1"$2":');
+					
+					data = JSON.parse(jsonString);
 				}
 			} catch (e) {
 				console.error("Ошибка парсинга фильтра:", e);

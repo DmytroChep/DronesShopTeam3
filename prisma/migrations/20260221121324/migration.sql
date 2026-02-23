@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN "birthday" DATETIME;
+ALTER TABLE "User" ADD COLUMN "middleName" TEXT;
+ALTER TABLE "User" ADD COLUMN "name" TEXT;
+ALTER TABLE "User" ADD COLUMN "phoneNumber" INTEGER;
+ALTER TABLE "User" ADD COLUMN "surname" TEXT;

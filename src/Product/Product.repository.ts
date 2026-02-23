@@ -139,6 +139,7 @@ export const ProductRepository: RepositoryContract = {
 			}
 
 			if (sameAsFilter) {
+				console.log(sameAsFilter)
 				const { name, categories, price, limit } = sameAsFilter;
 
 				const postsWithoutMain = filteredPosts.filter((currentProduct) => {
@@ -146,11 +147,13 @@ export const ProductRepository: RepositoryContract = {
 				});
 
 				if (name) {
+					console.log("wcqkipvw")
 					filteredPosts = postsWithoutMain.sort(
 						(drone1, drone2) =>
 							getSimilarity(drone2.title, name) -
 							getSimilarity(drone1.title, name),
 					);
+					console.log(filteredPosts)
 				}
 
 				if (price) {

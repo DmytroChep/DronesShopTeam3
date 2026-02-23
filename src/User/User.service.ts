@@ -25,7 +25,7 @@ export const UserService: ServiceContract = {
 			return user;
 		}
 
-		return  sign({ email: user.email }, ENV.SECRET_KEY, {
+		return jwt.sign({ email: user.email }, ENV.SECRET_KEY, {
 			expiresIn: "30d",
 		});
 	},

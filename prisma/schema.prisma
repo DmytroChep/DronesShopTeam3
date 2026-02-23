@@ -20,6 +20,12 @@ datasource db {
   email String @unique
   password String
   isAdmin Boolean
+  name String?
+  surname String?
+  middleName String?
+  birthday String?
+  phoneNumber String?
+
   
   contactsMessages ContactsMessage[]
   userInfo UserInfo?
@@ -101,6 +107,7 @@ model Product{
   description String
   color String
   price Int
+  discount Int?
   img String
   creationDate DateTime @default(now())
 
