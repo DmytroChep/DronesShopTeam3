@@ -26,7 +26,7 @@ datasource db {
   birthday String?
   phoneNumber String?
 
-  
+  // 
   contactsMessages ContactsMessage[]
   userInfo UserInfo?
   userOrderComment UserOrderComment[]
