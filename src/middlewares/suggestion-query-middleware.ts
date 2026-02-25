@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 
-// Типизируем Query (4-й аргумент в Request)
+
 export function suggestionsQueryMiddleware(
 	req: Request<{ new?: string; popular?: string }>,
 	res: Response,

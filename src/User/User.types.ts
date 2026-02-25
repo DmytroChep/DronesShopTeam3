@@ -7,6 +7,8 @@ export type LoginUser = Omit<
 	Prisma.UserGetPayload<{}>,
 	"firstname" | "secondName" | "avatar" | "isAdmin"
 >;
+export interface IUserUpdatePassword {password: string, email: string}
+
 export type UpdateUser = Prisma.UserUncheckedUpdateInput;
 export type UserWithRelations = Partial<
 	Prisma.UserGetPayload<{
@@ -61,6 +63,10 @@ export interface RepositoryContract {
 	getOrderById: (OrderId: number) => Promise<Order | string>;
 
 	sendCodeVerify: (code: number) => Promise<string>;
+	checkIsCodeExists: (code: number) => Promise<boolean | string>;
+	updatePassword: (
+		userData: IUserUpdatePassword,
+	) => Promise<string>;
 }
 
 export interface ServiceContract {
@@ -96,6 +102,10 @@ export interface ServiceContract {
 	getOrderById: (OrderId: number) => Promise<Order | string>;
 
 	sendCodeVerify: (userGmail: string) => Promise<string>;
+	checkIsCodeExists: (code: number) => Promise<boolean | string>;
+	updatePassword: (
+		userData: IUserUpdatePassword,
+	) => Promise<string>;
 }
 
 export interface ControllerContract {
@@ -162,6 +172,16 @@ export interface ControllerContract {
 
 	sendCodeVerify: (
 		req: Request<{ gmail: string }, string, string>,
+		res: Response<string>,
+	) => Promise<void>;
+
+	checkIsCodeExists: (
+		req: Request<{ code: number }>,
+		res: Response<boolean | string>,
+	) => Promise<void>;
+
+	updatePassword: (
+		req: Request<IUserUpdatePassword, IUserUpdatePassword | string, IUserUpdatePassword>,
 		res: Response<string>,
 	) => Promise<void>;
 }

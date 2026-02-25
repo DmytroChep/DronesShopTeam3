@@ -45,3 +45,5 @@ userRouter.delete(
 userRouter.get("/user/order/:id", authMiddleware, UserController.getOrderById);
 
 userRouter.get("/user/sendCode", UserController.sendCodeVerify);
+userRouter.get("/user/isCodeExists", UserController.checkIsCodeExists);
+userRouter.post("/user/updatePassword", UserController.updatePassword);

@@ -7,14 +7,12 @@ export const UserController: ControllerContract = {
 
 		const response = await UserService.registration(body);
 
-
 		res.status(200).json(response);
 	},
 	login: async (req, res) => {
 		const body = req.body;
 
 		const response = await UserService.login(body);
-
 
 		res.status(200).json(response);
 	},
@@ -118,4 +116,20 @@ export const UserController: ControllerContract = {
 		const response = await UserService.sendCodeVerify(gmail);
 		res.status(200).json(response);
 	},
+	checkIsCodeExists: async (req, res) => {
+		const code = Number(req.query.code);
+		if (!code) {
+			res.status(400).json("not writed code");
+			return;
+		}
+
+		const response = await UserService.checkIsCodeExists(code);
+		res.status(200).json(response);
+	},
+	updatePassword: async(req, res) => {
+		const userData = req.body;
+
+		const response = await UserService.updatePassword(userData);
+		res.status(200).json(response);
+	}
 };

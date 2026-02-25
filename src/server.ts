@@ -22,4 +22,4 @@ app.use(userRouter);
 
 app.listen(PORT, HOST, () => {
 	console.log(`http://${HOST}:${PORT}`);
-});
+}); 	

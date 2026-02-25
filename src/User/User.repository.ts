@@ -21,14 +21,19 @@ export const UserRepository: RepositoryContract = {
 		return user;
 	},
 	login: async (UserData) => {
-		console.log(UserData.email )
+		console.log(UserData);
 		const user = await client.user.findUnique({
 			where: { email: UserData.email },
 		});
+
 		if (user == null) {
 			return "user doesn't exists";
 		}
-		if (!(await compare(UserData.password, user.password))) {
+
+		
+		const isPasswordCorrect = await compare(UserData.password, user.password);
+
+		if (!isPasswordCorrect) {
 			return "password not correct";
 		}
 
@@ -42,6 +47,7 @@ export const UserRepository: RepositoryContract = {
 		return user;
 	},
 	updateUser: async (userData, id) => {
+		
 		const user = await client.user.update({
 			where: {
 				id: Number(id),
@@ -220,5 +226,39 @@ export const UserRepository: RepositoryContract = {
 			}
 			throw error;
 		}
+	},
+	checkIsCodeExists: async (code) => {
+		try {
+			const gmailCode = await client.gmailCode.findUnique({ where: { code: code } });
+			if (!gmailCode) {
+				return false;
+			}
+			if (gmailCode){
+				return true
+			}
+			return gmailCode;
+		} catch (error) {
+			if (error instanceof Prisma.PrismaClientKnownRequestError) {
+				if (error.code === "P2024") {
+					return "error code P2024";
+				}
+			}
+			throw error;
+		}
+	},
+	updatePassword: async (userData) => {
+		const hashedPassword = await hash(userData.password, 10);
+		const user = await client.user.update({
+			where: {
+				email: userData.email,
+			},
+			data: {...userData, password: hashedPassword},
+		});
+
+		if (!user) {
+			return "user not found";
+		}
+
+		return "success";
 	},
 };

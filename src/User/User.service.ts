@@ -108,9 +108,8 @@ export const UserService: ServiceContract = {
 				`
                 <div style="display: block; text-align: center; font-family: sans-serif;">
                     <p>your code is:</p>
-                    <h1 style="font-size: 32px; color: #333; background-color: #6d6d6dff">${code}</h1>
+                    <h1 style="font-size: 32px; color: #333; background-color: #6d6d6dff"><a href="http:
                     <hr style="width: 50%; margin: 20px auto;">
-                    <h4 style="color: #666;">have a good day!</h4>
                 </div>`,
 				`${gmail}`,
 			);
@@ -121,5 +120,15 @@ export const UserService: ServiceContract = {
 
 		const status = await UserRepository.sendCodeVerify(code);
 		return status;
+	},
+	checkIsCodeExists: async (code) => {
+		const isCodeExists = await UserRepository.checkIsCodeExists(code);
+
+		return isCodeExists
+	},
+	updatePassword: async (userData) => {
+		const response = await UserRepository.updatePassword(userData);
+
+		return response;
 	},
 };
