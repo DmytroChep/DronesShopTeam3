@@ -78,7 +78,8 @@ export const UserController: ControllerContract = {
 		res.status(200).json(response);
 	},
 	createOrder: async (req, res) => {
-		const OrderData = req.body;
+		// strip any user field from the body – user is determined from JWT
+		const { user, ...OrderData } = req.body as any;
 
 		const response = await UserService.createOrder(res.locals.token, OrderData);
 
@@ -126,10 +127,10 @@ export const UserController: ControllerContract = {
 		const response = await UserService.checkIsCodeExists(code);
 		res.status(200).json(response);
 	},
-	updatePassword: async(req, res) => {
+	updatePassword: async (req, res) => {
 		const userData = req.body;
 
 		const response = await UserService.updatePassword(userData);
 		res.status(200).json(response);
-	}
+	},
 };

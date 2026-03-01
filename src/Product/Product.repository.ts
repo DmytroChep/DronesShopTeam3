@@ -31,12 +31,36 @@ export const ProductRepository: RepositoryContract = {
 	},
 	getProductById: async (ProductId) => {
 		try {
-			const Product = client.product.findUnique({
+			const product = await client.product.findUnique({
 				where: { id: ProductId },
-				include: { productDescription: true, ProductCharacteristic: true },
+				include: { category: true }
 			});
 
-			return Product;
+			if (!product) return "product Not Found";
+
+			const categoryConfig = {
+				drone: { descIds: [0, 2, 3], charId: 1, mapFirstId: false },
+				monocular: { descIds: [4, 5, 6], charId: 2, mapFirstId: true }
+			};
+
+			const category = product.category[0]?.name === "monocular" ?  "monocular" : "drone"
+
+			const config = categoryConfig[category];
+
+			if (!config) return product;
+
+			const [rawDescriptions, characteristic] = await Promise.all([
+				client.productDescription.findMany({ where: { id: { in: config.descIds } } }),
+				client.productCharacteristic.findMany({ where: { id: config.charId } })
+			]);
+
+			return {
+				...product,
+				productDescription: config.mapFirstId 
+					? rawDescriptions.map((d, i) => i === 0 ? { ...d, id: 0 } : d)
+					: rawDescriptions,
+				ProductCharacteristic: characteristic
+			};
 		} catch (error) {
 			if (error instanceof Prisma.PrismaClientKnownRequestError) {
 				if (error.code === "P2024") {
@@ -139,7 +163,7 @@ export const ProductRepository: RepositoryContract = {
 			}
 
 			if (sameAsFilter) {
-				console.log(sameAsFilter)
+				console.log(sameAsFilter);
 				const { name, categories, price, limit } = sameAsFilter;
 
 				const postsWithoutMain = filteredPosts.filter((currentProduct) => {
@@ -147,13 +171,13 @@ export const ProductRepository: RepositoryContract = {
 				});
 
 				if (name) {
-					console.log("wcqkipvw")
+					console.log("wcqkipvw");
 					filteredPosts = postsWithoutMain.sort(
 						(drone1, drone2) =>
 							getSimilarity(drone2.title, name) -
 							getSimilarity(drone1.title, name),
 					);
-					console.log(filteredPosts)
+					console.log(filteredPosts);
 				}
 
 				if (price) {

@@ -7,7 +7,10 @@ export type LoginUser = Omit<
 	Prisma.UserGetPayload<{}>,
 	"firstname" | "secondName" | "avatar" | "isAdmin"
 >;
-export interface IUserUpdatePassword {password: string, email: string}
+export interface IUserUpdatePassword {
+	password: string;
+	email: string;
+}
 
 export type UpdateUser = Prisma.UserUncheckedUpdateInput;
 export type UserWithRelations = Partial<
@@ -30,6 +33,57 @@ export type Email = { email: string };
 
 export type CreateUser = Prisma.UserUncheckedCreateInput;
 
+export interface ICategory {
+	id: number;
+	name: string;
+}
+
+export interface productDescription {
+	id: number;
+	title: string;
+	description: string;
+	img: string;
+	productId: number;
+}
+
+export interface ProductCharacteristic {
+	id: number;
+	title: string;
+	description: string;
+	img: string;
+	coding: string;
+	ufsStorage: number;
+	eMMSStorage: number;
+	productId: number;
+}
+
+export interface ICartProduct {
+	id: number;
+	title: string;
+	price: number;
+	img: string;
+	discount?: number;
+	category: ICategory[];
+	description: string;
+	color: string;
+	quantity: number;
+	_count: {
+		orderProduct: number;
+	};
+	productDescription: productDescription[];
+	ProductCharacteristic: ProductCharacteristic[];
+}
+
+export interface IOrderRequest {
+	products: ICartProduct[];
+	deliveryAddress: string;
+	// user field is no longer provided by client, it's derived from JWT on the server
+	trackingNumber?: string;
+	orderStatus: string;
+	// optionally allow reference to an existing address
+	userAdressId?: number;
+}
+
 export interface RepositoryContract {
 	registration: (UserData: CreateUser) => Promise<CreateUser | string>;
 	login: (UserData: LoginUser) => Promise<LoginUser | string | null>;
@@ -51,22 +105,21 @@ export interface RepositoryContract {
 	deleteAdress: (AdressId: number) => Promise<Adress | string>;
 	getAdressById: (adressId: number) => Promise<Adress | string>;
 
+	// createOrder now returns an Order object rather than the user
 	createOrder: (
 		email: string,
-		OrderData: Order,
-	) => Promise<UserWithRelations | string>;
+		OrderData: IOrderRequest,
+	) => Promise<Order | string>;
 	updateDataOrder: (
 		OrderId: number,
 		OrderData: UpdateOrder,
-	) => Promise<UpdateOrder | string>;
+	) => Promise<Order | string>;
 	cancelOrder: (OrderId: number) => Promise<Order | string>;
 	getOrderById: (OrderId: number) => Promise<Order | string>;
 
 	sendCodeVerify: (code: number) => Promise<string>;
 	checkIsCodeExists: (code: number) => Promise<boolean | string>;
-	updatePassword: (
-		userData: IUserUpdatePassword,
-	) => Promise<string>;
+	updatePassword: (userData: IUserUpdatePassword) => Promise<string>;
 }
 
 export interface ServiceContract {
@@ -90,22 +143,21 @@ export interface ServiceContract {
 	deleteAdress: (AdressId: number) => Promise<Adress | string>;
 	getAdressById: (adressId: number) => Promise<Adress | string>;
 
+	// order service returns created order structure
 	createOrder: (
 		JWT: string,
-		OrderData: Order,
-	) => Promise<UserWithRelations | string>;
+		OrderData: IOrderRequest,
+	) => Promise<Order | string>;
 	updateDataOrder: (
 		OrderId: number,
 		OrderData: UpdateOrder,
-	) => Promise<UpdateOrder | string>;
+	) => Promise<Order | string>;
 	cancelOrder: (OrderId: number) => Promise<Order | string>;
 	getOrderById: (OrderId: number) => Promise<Order | string>;
 
 	sendCodeVerify: (userGmail: string) => Promise<string>;
 	checkIsCodeExists: (code: number) => Promise<boolean | string>;
-	updatePassword: (
-		userData: IUserUpdatePassword,
-	) => Promise<string>;
+	updatePassword: (userData: IUserUpdatePassword) => Promise<string>;
 }
 
 export interface ControllerContract {
@@ -154,8 +206,8 @@ export interface ControllerContract {
 	) => Promise<void>;
 
 	createOrder: (
-		req: Request<object, UserWithRelations | string, Order, { token: string }>,
-		res: Response<UserWithRelations | string>,
+		req: Request<object, Order | string, IOrderRequest, { token: string }>,
+		res: Response<Order | string>,
 	) => Promise<void>;
 	updateDataOrder: (
 		req: Request<{ id: number }, UpdateOrder | string, UpdateOrder>,
@@ -174,14 +226,16 @@ export interface ControllerContract {
 		req: Request<{ gmail: string }, string, string>,
 		res: Response<string>,
 	) => Promise<void>;
-
 	checkIsCodeExists: (
 		req: Request<{ code: number }>,
 		res: Response<boolean | string>,
 	) => Promise<void>;
-
 	updatePassword: (
-		req: Request<IUserUpdatePassword, IUserUpdatePassword | string, IUserUpdatePassword>,
+		req: Request<
+			IUserUpdatePassword,
+			IUserUpdatePassword | string,
+			IUserUpdatePassword
+		>,
 		res: Response<string>,
 	) => Promise<void>;
 }

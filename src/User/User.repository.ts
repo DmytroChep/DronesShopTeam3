@@ -30,7 +30,6 @@ export const UserRepository: RepositoryContract = {
 			return "user doesn't exists";
 		}
 
-		
 		const isPasswordCorrect = await compare(UserData.password, user.password);
 
 		if (!isPasswordCorrect) {
@@ -47,7 +46,6 @@ export const UserRepository: RepositoryContract = {
 		return user;
 	},
 	updateUser: async (userData, id) => {
-		
 		const user = await client.user.update({
 			where: {
 				id: Number(id),
@@ -144,18 +142,37 @@ export const UserRepository: RepositoryContract = {
 		}
 	},
 	createOrder: async (email, OrderData) => {
-		const user = await client.user.update({
-			where: { email: email },
+
+		const totalPrice = OrderData.products.reduce(
+			(sum, item) => sum + item.price * item.quantity,
+			0,
+		);
+
+		const order = await client.order.create({
 			data: {
-				order: {
-					create: OrderData,
+				totalPrice,
+				status: OrderData.orderStatus,
+				trackingNumber: OrderData.trackingNumber || "",
+				deliveryAddress: OrderData.deliveryAddress,
+				createdAt: new Date().toISOString(),
+				user: { connect: { email } },
+				...(OrderData.userAdressId
+					? { userAdress: { connect: { id: OrderData.userAdressId } } }
+					: {}),
+				products: {
+					create: OrderData.products.map((p) => ({
+						amount: p.quantity,
+						priceInPurchase: p.price,
+						product: { connect: { id: p.id } },
+					})),
 				},
 			},
 			include: {
-				order: true,
+				products: { include: { product: true } },
+				user: true,
 			},
 		});
-		return user;
+		return order;
 	},
 
 	updateDataOrder: async (OrderId, OrderData) => {
@@ -165,6 +182,10 @@ export const UserRepository: RepositoryContract = {
 					id: OrderId,
 				},
 				data: OrderData,
+				include: {
+					products: { include: { product: true } },
+					user: true,
+				},
 			});
 
 			return Order;
@@ -181,6 +202,10 @@ export const UserRepository: RepositoryContract = {
 		try {
 			const Order = await client.order.delete({
 				where: { id: OrderId },
+				include: {
+					products: { include: { product: true } },
+					user: true,
+				},
 			});
 			console.log(Order);
 			return Order;
@@ -197,6 +222,10 @@ export const UserRepository: RepositoryContract = {
 		try {
 			const Order = await client.order.findUnique({
 				where: { id: id },
+				include: {
+					products: { include: { product: true } },
+					user: true,
+				},
 			});
 			if (!Order) {
 				return "incorrect id";
@@ -229,12 +258,14 @@ export const UserRepository: RepositoryContract = {
 	},
 	checkIsCodeExists: async (code) => {
 		try {
-			const gmailCode = await client.gmailCode.findUnique({ where: { code: code } });
+			const gmailCode = await client.gmailCode.findUnique({
+				where: { code: code },
+			});
 			if (!gmailCode) {
 				return false;
 			}
-			if (gmailCode){
-				return true
+			if (gmailCode) {
+				return true;
 			}
 			return gmailCode;
 		} catch (error) {
@@ -252,7 +283,7 @@ export const UserRepository: RepositoryContract = {
 			where: {
 				email: userData.email,
 			},
-			data: {...userData, password: hashedPassword},
+			data: { ...userData, password: hashedPassword },
 		});
 
 		if (!user) {
