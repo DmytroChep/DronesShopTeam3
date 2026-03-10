@@ -64,7 +64,17 @@ export const UserRepository: RepositoryContract = {
 			where: { id: Number(id) },
 			include: {
 				userAdress: true,
-				order: true,
+				order: {
+					include: {
+						user: true,
+						userAdress: true,
+						products: {
+							include: {
+								product: true
+							}
+						}
+					}
+				},
 			},
 		});
 		if (!user) {

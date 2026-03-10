@@ -108,7 +108,7 @@ export const UserService: ServiceContract = {
 				`
                 <div style="display: block; text-align: center; font-family: sans-serif;">
                     <p>your code is:</p>
-                    <h1 style="font-size: 32px; color: #333; background-color: #6d6d6dff"><a href="http:
+                    <h1 style="font-size: 32px; color: #333; background-color: #6d6d6dff">${code}<a href="http:
                     <hr style="width: 50%; margin: 20px auto;">
                 </div>`,
 				`${gmail}`,

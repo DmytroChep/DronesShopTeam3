@@ -55,7 +55,7 @@ model Order {
   id              Int            @unique @id @default(autoincrement())
   totalPrice      Int
   status          String
-  trackingNumber  String?
+  trackingNumber  String? @default("20030040050000")
   deliveryAddress String
   createdAt       String
   products        OrderProduct[]
